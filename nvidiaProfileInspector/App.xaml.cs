@@ -17,6 +17,7 @@ namespace nvidiaProfileInspector
     using System.Threading;
     using System.Windows;
     using System.Windows.Interop;
+    using System.Windows.Media;
     using System.Windows.Threading;
 
     public partial class App : Application
@@ -55,6 +56,11 @@ namespace nvidiaProfileInspector
                 ActivateRunningInstance();
                 Shutdown();
                 return;
+            }
+
+            if (startupOptions.UseSoftwareRendering)
+            {
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
 
             ShowStartupSplashScreen();
@@ -318,6 +324,7 @@ namespace nvidiaProfileInspector
                 IsSilentMode = HasArgument(arguments, "-silentImport") || HasArgument(arguments, "-silent"),
                 ExportCustomized = HasArgument(arguments, "-exportCustomized"),
                 UseMockDriver = HasArgument(arguments, "-mock"),
+                UseSoftwareRendering = HasArgument(arguments, "-useSoftwareRendering"),
                 ImportMode = ParseImportMode(arguments)
             };
         }
@@ -596,6 +603,8 @@ namespace nvidiaProfileInspector
 
             public bool HasImportFiles => NipFiles.Length > 0;
             public bool RequiresSingleInstanceMutex => !CreateCustomSettingNames && !HasImportFiles && !ExportCustomized;
+
+            public bool UseSoftwareRendering { get; set; }
         }
     }
 }
